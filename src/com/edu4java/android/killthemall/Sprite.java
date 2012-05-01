@@ -1,12 +1,15 @@
 package com.edu4java.android.killthemall;
 
+import java.util.Random;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 
 public class Sprite {
-	private int x = 0;
-	private int y = 0;
+	private int x;
+	private int y;
 	private int xSpeed = 5;
 	private int ySpeed = 5;
 	private GameView gameView;
@@ -16,12 +19,19 @@ public class Sprite {
 	private int currentFrame;
 	private static final int BMP_ROWS = 4;
 	private static final int BMP_COLUMNS = 3;
+    private static final int MAX_SPEED = 5;
 
 	public Sprite(GameView gameView, Bitmap bmp) {
 		this.gameView = gameView;
 		this.bmp = bmp;
 		this.width = bmp.getWidth() / BMP_COLUMNS;
 		this.height = bmp.getHeight() / BMP_ROWS;
+
+		Random rnd = new Random();
+		x = rnd.nextInt(gameView.getWidth() - width);
+		y = rnd.nextInt(gameView.getHeight() - height);
+        xSpeed = rnd.nextInt(MAX_SPEED * 2) - MAX_SPEED;
+        ySpeed = rnd.nextInt(MAX_SPEED * 2) - MAX_SPEED;
 	}
 
 	private void update() {
@@ -45,18 +55,18 @@ public class Sprite {
 		canvas.drawBitmap(bmp, src, dst, null);
 	}
 
+	public boolean isCollision(float x2, float y2) {
+		return x2 > x && x2 < x + width && y2 > y && y2 < y + height;
+	}
 	// return 1, 2, 3 or 4
 	private int getAnimationRow() {
 		if (xSpeed > 0 && ySpeed > 0) {
 			return 2;
-		}
-		else if (xSpeed > 0 && ySpeed < 0) {
+		} else if (xSpeed > 0 && ySpeed < 0) {
 			return 3;
-		}
-		else if (xSpeed < 0 && ySpeed > 0) {
+		} else if (xSpeed < 0 && ySpeed > 0) {
 			return 0;
-		}
-		else if (xSpeed < 0 && ySpeed < 0) {
+		} else if (xSpeed < 0 && ySpeed < 0) {
 			return 1;
 		}
 
